@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CVAnalyzer — Instant CV Scoring & Feedback</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ───────────── NAVBAR ───────────── -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 5h12M4 9h9M4 13h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        CV<strong>Analyzer</strong>
+      </div>
+      <div class="nav-right">
+        <span class="nav-badge">Free · No Signup</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ───────────── LANDING CONTENT ───────────── -->
+  <div id="landingContent">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="grid-overlay"></div>
+      </div>
+
+      <div class="hero-inner">
+        <!-- Left copy -->
+        <div class="hero-left">
+          <div class="hero-pill">
+            <span class="pill-dot"></span> Free CV Analysis Tool
+          </div>
+          <h1>Get Your CV <span class="gradient-text">Scored &amp; Improved</span> in Seconds</h1>
+          <p class="hero-desc">
+            Upload your CV and instantly receive a detailed score, actionable suggestions, and keyword matching against any job description.
+          </p>
+
+          <div class="trust-row">
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              PDF &amp; DOCX support
+            </div>
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Results in under 5 s
+            </div>
+            <div class="trust-item">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              No data stored
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-num">7</span>
+              <span class="stat-label">Score Categories</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-num">100</span>
+              <span class="stat-label">Point Score</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+              <span class="stat-num">∞</span>
+              <span class="stat-label">Keywords Checked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right upload card -->
+        <div class="hero-right">
+          <div class="upload-card" id="uploadSection">
+            <div class="upload-card-header">
+              <h2>Analyze Your CV</h2>
+              <p>Upload below to get your instant score</p>
+            </div>
+
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-icon">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                  <path d="M20 4v22M20 4L13 11M20 4l7 7" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M6 30v4a2 2 0 002 2h24a2 2 0 002-2v-4" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <p class="drop-text"><strong>Drag &amp; drop your CV</strong></p>
+              <p class="drop-sub">or click to browse</p>
+              <div class="drop-formats">
+                <span>PDF</span><span class="sep">·</span><span>DOCX</span><span class="sep">·</span><span>Max 10 MB</span>
+              </div>
+              <input type="file" id="fileInput" accept=".pdf,.docx" hidden />
+            </div>
+
+            <div class="file-selected" id="fileSelected" style="display:none">
+              <div class="file-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="1" width="14" height="18" rx="2" stroke="#6366f1" stroke-width="1.8"/><path d="M7 7h8M7 11h6" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div class="file-info">
+                <span class="file-name" id="fileName"></span>
+                <span class="file-size" id="fileSize"></span>
+              </div>
+              <button class="remove-file" id="removeFile" title="Remove">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+
+            <div class="keywords-section">
+              <label for="keywords">
+                Job Description Keywords
+                <span class="optional-tag">optional</span>
+              </label>
+              <textarea id="keywords" placeholder="e.g. Python, Agile, project management, data analysis..." rows="3"></textarea>
+              <p class="keywords-hint">Paste skills from the job posting, separated by commas.</p>
+            </div>
+
+            <button class="btn-analyze" id="analyzeBtn" disabled>
+              <span class="btn-text">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1v16M1 9h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Analyze My CV
+              </span>
+              <span class="btn-loader" style="display:none">
+                <svg class="spinner" width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="36" stroke-dashoffset="27"/></svg>
+                Analyzing...
+              </span>
+            </button>
+
+            <div class="error-msg" id="errorMsg" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features-section">
+      <div class="features-inner">
+        <div class="feature-card">
+          <div class="feature-icon-wrap" style="--c:#6366f1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Score Analysis</h3>
+          <p>100-point score across 7 categories — contact, experience, education, skills and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap" style="--c:#8b5cf6">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="8" stroke="#8b5cf6" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Keyword Matching</h3>
+          <p>Paste the job description and see exactly which keywords you're missing for ATS systems.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap" style="--c:#06b6d4">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Smart Suggestions</h3>
+          <p>Actionable recommendations to fix weak sections and boost your overall score.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap" style="--c:#10b981">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Instant Results</h3>
+          <p>No waiting, no login. Upload your file and get full feedback in under 5 seconds.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-section">
+      <div class="how-inner">
+        <div class="section-label">How it works</div>
+        <h2 class="section-heading">Three steps to a stronger CV</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">01</div>
+            <h4>Upload your CV</h4>
+            <p>Drag and drop or click to upload a PDF or DOCX file up to 10 MB.</p>
+          </div>
+          <div class="step-arrow">
+            <svg width="32" height="16" viewBox="0 0 32 16" fill="none"><path d="M0 8h28M22 2l6 6-6 6" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="step">
+            <div class="step-num">02</div>
+            <h4>Add job keywords</h4>
+            <p>Optionally paste keywords from the job posting to get a tailored match score.</p>
+          </div>
+          <div class="step-arrow">
+            <svg width="32" height="16" viewBox="0 0 32 16" fill="none"><path d="M0 8h28M22 2l6 6-6 6" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="step">
+            <div class="step-num">03</div>
+            <h4>Get your results</h4>
+            <p>Receive a full breakdown with your score, strengths, and what to improve.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="logo footer-logo">
+          <div class="logo-icon">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h9M4 13h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          CV<strong>Analyzer</strong>
+        </div>
+        <p class="footer-copy">Instant feedback for a better CV. Free, private, no signup.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ───────────── RESULTS ───────────── -->
+  <div id="results" style="display:none">
+    <div class="results-topbar">
+      <button class="btn-back" id="resetBtn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Analyze Another CV
+      </button>
+      <div class="logo results-logo">
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 5h12M4 9h9M4 13h7" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        CV<strong>Analyzer</strong>
+      </div>
+    </div>
+
+    <div class="results-body">
+
+      <!-- Overall Score -->
+      <div class="r-card score-card">
+        <div class="score-ring-wrap">
+          <svg class="score-ring" width="160" height="160" viewBox="0 0 160 160">
+            <circle cx="80" cy="80" r="68" fill="none" stroke="#f1f5f9" stroke-width="14"/>
+            <circle id="scoreCircle" cx="80" cy="80" r="68" fill="none" stroke="#6366f1" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="427"
+              transform="rotate(-90 80 80)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.22,1,.36,1)"/>
+          </svg>
+          <div class="score-text">
+            <span class="score-number" id="scoreNumber">0</span>
+            <span class="score-label">/100</span>
+          </div>
+        </div>
+        <div class="score-info">
+          <div class="assessment-badge" id="assessmentBadge"></div>
+          <h2 id="cvFilename"></h2>
+          <p id="wordCountText"></p>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="r-card">
+        <h3 class="r-title">Score Breakdown</h3>
+        <div class="categories" id="categories"></div>
+      </div>
+
+      <!-- Two-col grid for strengths + suggestions -->
+      <div class="r-two-col">
+        <div class="r-card" id="strengthsCard" style="display:none">
+          <h3 class="r-title">Strengths</h3>
+          <ul class="strength-list" id="strengthsList"></ul>
+        </div>
+        <div class="r-card" id="suggestionsCard" style="display:none">
+          <h3 class="r-title">Suggestions</h3>
+          <ul class="suggestion-list" id="suggestionsList"></ul>
+        </div>
+      </div>
+
+      <!-- Keywords -->
+      <div class="r-card" id="keywordsCard" style="display:none">
+        <h3 class="r-title">Keyword Matching</h3>
+        <div class="keyword-groups">
+          <div class="keyword-group">
+            <h4><span class="dot green"></span> Matched</h4>
+            <div class="tags" id="matchedTags"></div>
+          </div>
+          <div class="keyword-group">
+            <h4><span class="dot red"></span> Missing</h4>
+            <div class="tags" id="missingTags"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
