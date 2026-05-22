@@ -642,9 +642,10 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 .ai-fix-result { border-left: 3px solid #6366f1; }
 .ai-fix-result-hdr {
   display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
 }
 .ai-fix-result-hdr .r-title { margin-bottom: 0; }
+.ai-fix-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .btn-copy-cv {
   display: flex; align-items: center; gap: 6px;
   font-size: .82rem; font-weight: 600; font-family: inherit;
@@ -655,6 +656,16 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 }
 .btn-copy-cv:hover { background: #e0e7ff; border-color: var(--primary); }
 .btn-copy-cv.copied { color: var(--success); background: #f0fdf4; border-color: #bbf7d0; }
+.btn-download-cv {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .82rem; font-weight: 700; font-family: inherit;
+  color: #fff; border: none; border-radius: 8px;
+  padding: 7px 14px; cursor: pointer;
+  transition: opacity .15s, transform .15s;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+.btn-download-cv:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); }
+.btn-download-cv:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 .ai-fix-text {
   white-space: pre-wrap; word-break: break-word;
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;

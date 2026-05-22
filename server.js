@@ -5,6 +5,8 @@ const path = require("path");
 const cors = require("cors");
 const mammoth = require("mammoth");
 const Anthropic = require("@anthropic-ai/sdk");
+const { Document, Paragraph, TextRun, Packer, HeadingLevel, AlignmentType } = require("docx");
+const PDFDocument = require("pdfkit");
 const _pdfParse = require("pdf-parse");
 const pdfParse = typeof _pdfParse === "function" ? _pdfParse : _pdfParse.default;
 
@@ -328,24 +330,26 @@ app.post("/api/fix-cv", upload.single("cv"), async (req, res) => {
     const jobDescription = (req.body.jobDescription || "").trim();
 
     const jobContext = jobTitle || jobDescription
-      ? `\n\nThis CV is being tailored for the following role:\nJob Title: ${jobTitle || "Not specified"}\n${jobDescription ? `Job Description:\n${jobDescription}` : ""}`
+      ? `\n\nTARGET ROLE:\nJob Title: ${jobTitle || "Not specified"}\n${jobDescription ? `Job Description:\n${jobDescription}` : ""}\n\nImportant: Tailor the Professional Summary directly to this role. Weave in the job title and key requirements from the job description. Mirror the language used in the job posting throughout the CV.`
       : "";
 
-    const prompt = `You are an expert CV/resume writer. Rewrite the CV below to make it professional, ATS-friendly, and compelling to recruiters.
+    const prompt = `You are an expert CV/resume writer. Rewrite the CV below into a polished, professional version that will impress recruiters and pass ATS screening.
 
 Rules:
-- Keep ONLY the person's real experience, education, skills, and contact info — do not invent anything
-- Add a strong Professional Summary at the top if one is missing
-- Rewrite bullet points with strong action verbs (Led, Built, Delivered, Increased, etc.)
-- Add quantified achievements where the original gives enough context (e.g. "managed projects" → "Managed 4 concurrent projects")
-- Organise clearly into: Contact | Summary | Experience | Education | Skills
-- Remove filler phrases like "responsible for" or "duties included"
-- Keep it concise — aim for 400–700 words of content${jobContext}
+- Write a strong Professional Summary (3–4 sentences) that clearly positions the person for this role, using the job title and key requirements
+- EXPERIENCE SECTION — this is critical: expand every job entry with 4–6 strong bullet points. If the original has thin or vague bullets, generate realistic, detailed achievement-based bullets based on the person's job title, company, and industry. Use metrics and outcomes (e.g. "Increased team efficiency by 25% by implementing a new workflow system")
+- Use strong action verbs: Led, Developed, Delivered, Optimised, Spearheaded, Implemented, Reduced, Grew, Managed, Designed, etc.
+- SKILLS section: list both technical and soft skills relevant to the role
+- Organise into sections: CONTACT INFORMATION | PROFESSIONAL SUMMARY | WORK EXPERIENCE | EDUCATION | SKILLS
+- Use ALL CAPS for section headers
+- Remove filler phrases: "responsible for", "duties included", "assisted with", "helped"
+- Do NOT invent new jobs, companies, or qualifications — only expand what already exists
+- Aim for 550–800 words total${jobContext}
 
 Original CV:
 ${cvText}
 
-Return ONLY the rewritten CV text with clear section headers. Do not include any explanation or commentary.`;
+Return ONLY the rewritten CV text with clear section headers. No explanation, no commentary, plain text only.`;
 
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
@@ -358,6 +362,85 @@ Return ONLY the rewritten CV text with clear section headers. Do not include any
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || "Failed to fix CV" });
+  }
+});
+
+function parseCvLines(text) {
+  return text.split("\n").map(line => {
+    const t = line.trim();
+    if (!t) return { type: "empty" };
+    if (/^[A-Z][A-Z\s\/&|]{2,}$/.test(t)) return { type: "header", text: t };
+    if (/^[•\-\*]\s+/.test(t)) return { type: "bullet", text: t.replace(/^[•\-\*]\s+/, "") };
+    return { type: "text", text: t };
+  });
+}
+
+app.post("/api/download-cv", express.json({ limit: "2mb" }), async (req, res) => {
+  try {
+    const { text, format } = req.body;
+    if (!text) return res.status(400).json({ error: "No CV text provided" });
+
+    const lines = parseCvLines(text);
+
+    if (format === "docx") {
+      const children = lines.map(l => {
+        if (l.type === "empty") return new Paragraph({ text: "" });
+        if (l.type === "header") return new Paragraph({
+          children: [new TextRun({ text: l.text, bold: true, size: 28, color: "4338CA" })],
+          spacing: { before: 280, after: 80 },
+          border: { bottom: { color: "C7D2FE", size: 6, space: 4, style: "single" } },
+        });
+        if (l.type === "bullet") return new Paragraph({
+          children: [new TextRun({ text: l.text, size: 22 })],
+          bullet: { level: 0 },
+          spacing: { after: 40 },
+        });
+        return new Paragraph({
+          children: [new TextRun({ text: l.text, size: 22 })],
+          spacing: { after: 40 },
+        });
+      });
+
+      const doc = new Document({
+        styles: { default: { document: { run: { font: "Calibri" } } } },
+        sections: [{ properties: { page: { margin: { top: 720, bottom: 720, left: 900, right: 900 } } }, children }],
+      });
+      const buf = await Packer.toBuffer(doc);
+      res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+      res.setHeader("Content-Disposition", "attachment; filename=\"improved-cv.docx\"");
+      res.send(buf);
+
+    } else if (format === "pdf") {
+      const doc = new PDFDocument({ margin: 55, size: "A4" });
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", "attachment; filename=\"improved-cv.pdf\"");
+      doc.pipe(res);
+
+      let firstHeader = true;
+      for (const l of lines) {
+        if (l.type === "empty") { doc.moveDown(0.4); continue; }
+        if (l.type === "header") {
+          if (!firstHeader) doc.moveDown(0.6);
+          firstHeader = false;
+          doc.font("Helvetica-Bold").fontSize(12).fillColor("#4338CA").text(l.text.toUpperCase());
+          doc.moveTo(doc.page.margins.left, doc.y + 2)
+             .lineTo(doc.page.width - doc.page.margins.right, doc.y + 2)
+             .strokeColor("#C7D2FE").lineWidth(1).stroke();
+          doc.moveDown(0.3);
+          doc.fillColor("#000000");
+        } else if (l.type === "bullet") {
+          doc.font("Helvetica").fontSize(10).text(`• ${l.text}`, { indent: 12, lineGap: 2 });
+        } else {
+          doc.font("Helvetica").fontSize(10).fillColor("#111827").text(l.text, { lineGap: 2 });
+        }
+      }
+      doc.end();
+    } else {
+      res.status(400).json({ error: "Invalid format. Use docx or pdf." });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Download failed" });
   }
 });
 

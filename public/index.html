@@ -245,10 +245,20 @@
       <div class="r-card ai-fix-result" id="aiFixResult" style="display:none">
         <div class="ai-fix-result-hdr">
           <h3 class="r-title">Your Improved CV</h3>
-          <button class="btn-copy-cv" id="copyCvBtn">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="4" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
-            Copy
-          </button>
+          <div class="ai-fix-actions">
+            <button class="btn-copy-cv" id="copyCvBtn">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="4" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+              Copy
+            </button>
+            <button class="btn-download-cv" id="downloadDocxBtn" data-format="docx">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 1h7l3 3v10H3V1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 1v4h4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 8h5M5 11h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              DOCX
+            </button>
+            <button class="btn-download-cv" id="downloadPdfBtn" data-format="pdf">
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 1h7l3 3v10H3V1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 1v4h4" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 8h5M5 11h3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              PDF
+            </button>
+          </div>
         </div>
         <pre class="ai-fix-text" id="aiFixText"></pre>
         <div class="error-msg" id="aiFixError" style="display:none"></div>

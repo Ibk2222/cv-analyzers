@@ -173,6 +173,33 @@
     });
   });
 
+  async function downloadCv(format) {
+    const text = aiFixText.textContent;
+    if (!text) return;
+    const btn = format === "docx" ? document.getElementById("downloadDocxBtn") : document.getElementById("downloadPdfBtn");
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="spinner" width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="30" stroke-dashoffset="22"/></svg>';
+
+    try {
+      const res = await fetch("/api/download-cv", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, format }),
+      });
+      if (!res.ok) { const d = await res.json(); alert(d.error || "Download failed"); return; }
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url; a.download = `improved-cv.${format}`; a.click();
+      URL.revokeObjectURL(url);
+    } catch { alert("Network error — is the server running?"); }
+    finally  { btn.disabled = false; btn.innerHTML = orig; }
+  }
+
+  document.getElementById("downloadDocxBtn").addEventListener("click", () => downloadCv("docx"));
+  document.getElementById("downloadPdfBtn").addEventListener("click",  () => downloadCv("pdf"));
+
   /* ── Single Results Renderer ── */
   function renderSingleResults(data) {
     landingContent.style.display = "none";
