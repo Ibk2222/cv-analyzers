@@ -2,6 +2,9 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const mammoth = require("mammoth");
+const _pdfParse = require("pdf-parse");
+const pdfParse = typeof _pdfParse === "function" ? _pdfParse : _pdfParse.default;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,11 +28,9 @@ const upload = multer({
 
 async function extractText(file) {
   if (file.mimetype === "application/pdf") {
-    const pdfParse = require("pdf-parse");
     const data = await pdfParse(file.buffer);
     return data.text;
   } else {
-    const mammoth = require("mammoth");
     const result = await mammoth.extractRawText({ buffer: file.buffer });
     return result.value;
   }
