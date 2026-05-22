@@ -768,8 +768,10 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 .bjc-fit-score, .bjc-cv-score { text-align: center; }
 .fit-pct { display: block; font-size: 1.5rem; font-weight: 900; line-height: 1; margin-bottom: 2px; }
 .fit-pct.high { color: #10b981; }
-.fit-pct.mid { color: #f59e0b; }
-.fit-pct.low { color: #ef4444; }
+.fit-pct.mid  { color: #f59e0b; }
+.fit-pct.low  { color: #ef4444; }
+.fit-pct.na   { color: var(--muted); font-size: 1.1rem; }
+.bjc-no-jd { font-size: .78rem; color: var(--muted); font-style: italic; margin-bottom: 12px; }
 .bjc-scores span:last-child, .bjc-cv-score span { font-size: .68rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; display: block; }
 .cv-score-num { font-size: 1.1rem; font-weight: 800; color: var(--text); display: block; line-height: 1; margin-bottom: 2px; }
 .scores-divider { width: 1px; height: 36px; background: var(--border); }

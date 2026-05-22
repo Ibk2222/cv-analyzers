@@ -284,7 +284,7 @@
         <button class="job-item-remove" data-id="${id}">Remove</button>
       </div>
       <input type="text" placeholder="Job title, e.g. Marketing Manager..." />
-      <textarea rows="4" placeholder="Paste job description here..."></textarea>`;
+      <textarea rows="3" placeholder="Job description (optional) — paste for keyword matching & tailoring tips..."></textarea>`;
 
     div.querySelector(".job-item-remove").addEventListener("click", () => removeJobItem(id));
     jobsList.appendChild(div);
@@ -319,12 +319,12 @@
     if (!bulkFile || !jobItems.length) return;
 
     const jobs = jobItems.map(j => ({
-      title:       j.titleEl.value.trim(),
+      title:       j.titleEl.value.trim() || j.descEl.value.trim().substring(0, 40) || "Untitled Job",
       description: j.descEl.value.trim(),
-    })).filter(j => j.description);
+    }));
 
     if (!jobs.length) {
-      bulkErrorMsg.textContent = "Please paste at least one job description.";
+      bulkErrorMsg.textContent = "Please add at least one job.";
       bulkErrorMsg.style.display = "block"; return;
     }
 
@@ -369,25 +369,26 @@
     document.getElementById("bulkSummaryText").textContent = `${r.length} job${r.length > 1 ? "s" : ""} analyzed for ${data.filename}`;
     document.getElementById("jobsAnalyzed").textContent    = r.length;
 
-    const fits = r.map(j => j.jobFitScore);
-    document.getElementById("bestFitPct").textContent = Math.max(...fits) + "%";
-    document.getElementById("avgFitPct").textContent  = Math.round(fits.reduce((a, b) => a + b, 0) / fits.length) + "%";
+    const scoredFits = r.map(j => j.jobFitScore).filter(f => f !== null);
+    document.getElementById("bestFitPct").textContent = scoredFits.length ? Math.max(...scoredFits) + "%" : "N/A";
+    document.getElementById("avgFitPct").textContent  = scoredFits.length ? Math.round(scoredFits.reduce((a, b) => a + b, 0) / scoredFits.length) + "%" : "N/A";
 
     const container = document.getElementById("bulkJobCards");
     container.innerHTML = "";
 
     r.forEach((job, idx) => {
-      const rank    = idx + 1;
-      const kTotal  = job.matchedKeywords.length + job.missingKeywords.length;
-      const kPct    = kTotal > 0 ? Math.round((job.matchedKeywords.length / kTotal) * 100) : 0;
+      const rank     = idx + 1;
+      const hasFit   = job.jobFitScore !== null;
+      const kTotal   = job.matchedKeywords.length + job.missingKeywords.length;
+      const kPct     = kTotal > 0 ? Math.round((job.matchedKeywords.length / kTotal) * 100) : 0;
       const detailId = `bjd-${idx}`;
 
       const card = document.createElement("div");
       card.className = "r-card bulk-job-card";
       card.innerHTML = `
-        <div class="bjc-rank-col ${rank === 1 ? "rank-1" : ""}">
+        <div class="bjc-rank-col ${rank === 1 && hasFit ? "rank-1" : ""}">
           <span class="rank-num">#${rank}</span>
-          ${rank === 1 ? '<span class="best-badge">Best</span>' : ""}
+          ${rank === 1 && hasFit ? '<span class="best-badge">Best</span>' : ""}
         </div>
         <div class="bjc-body">
           <div class="bjc-top">
@@ -397,7 +398,7 @@
             </div>
             <div class="bjc-scores">
               <div class="bjc-fit-score">
-                <span class="fit-pct ${fitClass(job.jobFitScore)}">${job.jobFitScore}%</span>
+                <span class="fit-pct ${hasFit ? fitClass(job.jobFitScore) : "na"}">${hasFit ? job.jobFitScore + "%" : "N/A"}</span>
                 <span>Job Fit</span>
               </div>
               <div class="scores-divider"></div>
@@ -407,10 +408,10 @@
               </div>
             </div>
           </div>
-          <div class="bjc-kw-row">
+          ${hasFit ? `<div class="bjc-kw-row">
             <span class="bjc-kw-text">${job.matchedKeywords.length}/${kTotal} keywords matched</span>
             <div class="progress-bar bjc-bar"><div class="progress-fill ${fitClass(kPct)}" style="width:${kPct}%"></div></div>
-          </div>
+          </div>` : `<p class="bjc-no-jd">No job description provided — showing general CV score only</p>`}
           <button class="bjc-expand" data-detail="${detailId}">
             Show Details <span class="expand-arrow">↓</span>
           </button>

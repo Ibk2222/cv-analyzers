@@ -276,7 +276,7 @@ app.post("/api/bulk-analyze", upload.single("cv"), async (req, res) => {
       const keywords = jobDesc ? extractJobKeywords(jobDesc) : [];
       const analysis = analyzeCV(text, keywords);
 
-      let tailoringTips = [], jobFitScore = 0;
+      let tailoringTips = [], jobFitScore = null;
       if (jobDesc) {
         tailoringTips = generateTailoringTips(text, jobDesc, jobTitleStr);
         const total = analysis.matchedKeywords.length + analysis.missingKeywords.length;
