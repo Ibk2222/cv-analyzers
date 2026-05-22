@@ -606,29 +606,49 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+  .hero { padding: 90px 24px 64px; }
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
   .hero-left { display: flex; flex-direction: column; align-items: center; }
-  .hero-desc { max-width: 100%; }
+  .hero-desc { max-width: 560px; }
   .hero-stats { width: 100%; justify-content: center; }
+  .trust-row { justify-content: center; }
+  .hero-right {
+    width: 100%;
+    justify-content: stretch;
+  }
+  .upload-card {
+    max-width: 100%;
+    border-radius: 16px;
+  }
   .features-inner { grid-template-columns: repeat(2, 1fr); }
   .r-two-col { grid-template-columns: 1fr; }
   .r-two-col .r-card { margin-bottom: 20px; }
 }
 @media (max-width: 600px) {
-  .hero { padding: 80px 16px 60px; }
+  .hero { padding: 80px 16px 56px; }
+  .hero-stats { flex-wrap: wrap; gap: 8px; }
+  .stat { padding: 8px 12px; }
+  .upload-card { padding: 20px 16px; border-radius: 14px; }
+  .mode-tab { font-size: .78rem; padding: 7px 8px; }
   .features-inner { grid-template-columns: 1fr; }
   .steps { flex-direction: column; gap: 24px; }
   .step-arrow { transform: rotate(90deg); }
   .score-card { flex-direction: column; align-items: center; text-align: center; }
   .missing-tags-wrap { padding-left: 0; }
   .r-card { padding: 20px 16px; }
-  .stat { padding: 0 12px; }
   .bulk-summary-card { flex-direction: column; align-items: flex-start; }
   .bulk-summary-stats { justify-content: flex-start; }
   .bjc-top { flex-direction: column; gap: 12px; }
   .bjc-scores { justify-content: flex-start; }
   .job-fit-banner { flex-direction: column; align-items: flex-start; }
   .job-fit-right { width: 100%; justify-content: flex-start; }
+  .bulk-summary-card h2 { font-size: .95rem; }
+  .bstat-num { font-size: 1.1rem; }
+  .kw-summary-text { flex-direction: column; align-items: flex-start; gap: 6px; }
 }
 
 /* ── MODE TABS ── */
