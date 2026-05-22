@@ -1,9 +1,9 @@
 (function () {
   /* ─────────────── SHARED HELPERS ─────────────── */
   function isValidFile(file, showErr) {
-    const allowed = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const allowedMime = ["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/zip","application/octet-stream"];
     const ext = file.name.split(".").pop().toLowerCase();
-    if (!allowed.includes(file.type) && !["pdf", "docx"].includes(ext)) { showErr("Only PDF and DOCX files are supported."); return false; }
+    if (!allowedMime.includes(file.type) && !["pdf","doc","docx"].includes(ext)) { showErr("Only PDF and DOCX files are supported."); return false; }
     if (file.size > 10 * 1024 * 1024) { showErr("File size must be under 10 MB."); return false; }
     return true;
   }
