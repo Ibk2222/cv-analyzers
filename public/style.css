@@ -609,12 +609,15 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
   .hero { padding: 90px 24px 64px; }
   .hero-inner {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
     text-align: center;
+    align-items: start;
   }
   .hero-left { display: flex; flex-direction: column; align-items: center; }
+  .hero-pill { margin-bottom: 16px; }
   .hero-desc { max-width: 560px; }
   .hero-stats { width: 100%; justify-content: center; }
+  .stat { padding: 0 14px; }
   .trust-row { justify-content: center; }
   .hero-right {
     width: 100%;
@@ -630,8 +633,11 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
 }
 @media (max-width: 600px) {
   .hero { padding: 80px 16px 56px; }
+  h1 { letter-spacing: -.015em; line-height: 1.1; }
+  .hero-pill { margin-bottom: 12px; }
+  .trust-row { gap: 10px; margin-bottom: 24px; }
   .hero-stats { flex-wrap: wrap; gap: 8px; }
-  .stat { padding: 8px 12px; }
+  .stat { padding: 8px 10px; }
   .upload-card { padding: 20px 16px; border-radius: 14px; }
   .mode-tab { font-size: .78rem; padding: 7px 8px; }
   .features-inner { grid-template-columns: 1fr; }
