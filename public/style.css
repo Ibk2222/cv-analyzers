@@ -27,6 +27,7 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ── NAVBAR ── */
@@ -619,17 +620,22 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
   .hero-stats { width: 100%; justify-content: center; }
   .stat { padding: 0 14px; }
   .trust-row { justify-content: center; }
-  .hero-right {
-    width: 100%;
-    justify-content: stretch;
-  }
-  .upload-card {
-    max-width: 100%;
-    border-radius: 16px;
-  }
+  .hero-right { width: 100%; justify-content: stretch; }
+  .upload-card { max-width: 100%; border-radius: 16px; }
   .features-inner { grid-template-columns: repeat(2, 1fr); }
   .r-two-col { grid-template-columns: 1fr; }
   .r-two-col .r-card { margin-bottom: 20px; }
+
+  /* Results pages */
+  .results-topbar { padding: 12px 16px; }
+  .results-body { padding: 24px 12px 48px; }
+  .bulk-summary-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .bulk-summary-stats { width: 100%; justify-content: flex-start; padding: 10px 16px; }
+  .bjc-body { padding: 14px 16px; }
+  .bjc-top { flex-wrap: wrap; gap: 12px; }
+  .bjc-scores { flex-shrink: 1; gap: 12px; }
+  .job-fit-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  .job-fit-right { width: 100%; justify-content: flex-start; }
 }
 @media (max-width: 600px) {
   .hero { padding: 80px 16px 56px; }
@@ -643,18 +649,29 @@ textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 
   .features-inner { grid-template-columns: 1fr; }
   .steps { flex-direction: column; gap: 24px; }
   .step-arrow { transform: rotate(90deg); }
-  .score-card { flex-direction: column; align-items: center; text-align: center; }
   .missing-tags-wrap { padding-left: 0; }
-  .r-card { padding: 20px 16px; }
-  .bulk-summary-card { flex-direction: column; align-items: flex-start; }
-  .bulk-summary-stats { justify-content: flex-start; }
-  .bjc-top { flex-direction: column; gap: 12px; }
-  .bjc-scores { justify-content: flex-start; }
-  .job-fit-banner { flex-direction: column; align-items: flex-start; }
-  .job-fit-right { width: 100%; justify-content: flex-start; }
+  .r-card { padding: 18px 14px; }
+  .kw-summary-text { flex-direction: column; align-items: flex-start; gap: 6px; }
+
+  /* Single results */
+  .score-card { flex-direction: column; align-items: center; text-align: center; gap: 20px; }
+  .score-ring { width: 130px !important; height: 130px !important; }
+  .score-number { font-size: 2.2rem; }
+  .results-body { padding: 16px 10px 40px; }
+  .results-topbar { padding: 10px 12px; }
+  .btn-back { padding: 6px 12px; font-size: .8rem; }
+
+  /* Bulk results */
   .bulk-summary-card h2 { font-size: .95rem; }
   .bstat-num { font-size: 1.1rem; }
-  .kw-summary-text { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .bstat { padding: 0 10px; }
+  .bjc-top { flex-direction: column; gap: 10px; }
+  .bjc-scores { justify-content: flex-start; gap: 16px; }
+  .bjc-rank-col { padding: 14px 12px; min-width: 48px; }
+  .bjc-body { padding: 12px 14px; }
+  .fit-pct { font-size: 1.3rem; }
+  .cv-score-num { font-size: .95rem; }
+  .bjc-expand { font-size: .76rem; padding: 5px 10px; }
 }
 
 /* ── MODE TABS ── */
