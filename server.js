@@ -266,7 +266,6 @@ app.post("/api/bulk-analyze", upload.single("cv"), async (req, res) => {
     let jobs;
     try { jobs = JSON.parse(req.body.jobs || "[]"); } catch { return res.status(400).json({ error: "Invalid jobs data" }); }
     if (!jobs.length) return res.status(400).json({ error: "No jobs provided" });
-    if (jobs.length > 10) return res.status(400).json({ error: "Maximum 10 jobs allowed" });
 
     const text = await extractText(req.file);
     if (!text || text.trim().length < 20) return res.status(400).json({ error: "Could not extract readable text from the file." });

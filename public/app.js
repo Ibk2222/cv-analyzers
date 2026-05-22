@@ -271,7 +271,7 @@
   }
 
   // Add / remove jobs
-  addJobBtn.addEventListener("click", () => { if (jobItems.length < 10) addJobItem(); });
+  addJobBtn.addEventListener("click", () => addJobItem());
 
   function addJobItem() {
     const id  = ++jobIdSeq;
@@ -308,7 +308,6 @@
   function renumberJobs() {
     jobItems.forEach((j, i) => { j.el.querySelector(".job-item-num").textContent = `Job #${i + 1}`; });
     jobCountBadge.textContent = jobItems.length + " added";
-    addJobBtn.disabled = jobItems.length >= 10;
   }
 
   function updateBulkBtn() {
