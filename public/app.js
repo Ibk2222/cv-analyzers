@@ -116,7 +116,61 @@
     results.style.display = "none";
     landingContent.style.display = "block";
     clearFile(); jobTitle.value = ""; jobDescription.value = "";
+    document.getElementById("aiFixResult").style.display = "none";
+    document.getElementById("aiFixText").textContent = "";
+    document.getElementById("aiFixError").style.display = "none";
     window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // AI Fix CV
+  const aiFixBtn  = document.getElementById("aiFixBtn");
+  const aiFixResult = document.getElementById("aiFixResult");
+  const aiFixText   = document.getElementById("aiFixText");
+  const aiFixError  = document.getElementById("aiFixError");
+  const copyCvBtn   = document.getElementById("copyCvBtn");
+
+  aiFixBtn.addEventListener("click", async () => {
+    if (!selectedFile) return;
+    const btnText   = aiFixBtn.querySelector(".btn-text");
+    const btnLoader = aiFixBtn.querySelector(".btn-loader");
+    btnText.style.display = "none"; btnLoader.style.display = "flex"; aiFixBtn.disabled = true;
+    aiFixError.style.display = "none"; aiFixResult.style.display = "none";
+
+    const fd = new FormData();
+    fd.append("cv", selectedFile);
+    if (jobTitle.value.trim())       fd.append("jobTitle",       jobTitle.value.trim());
+    if (jobDescription.value.trim()) fd.append("jobDescription", jobDescription.value.trim());
+
+    try {
+      const res  = await fetch("/api/fix-cv", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        aiFixError.textContent = data.error || "AI fix failed.";
+        aiFixError.style.display = "block";
+        aiFixResult.style.display = "block";
+        return;
+      }
+      aiFixText.textContent = data.fixedCV;
+      aiFixResult.style.display = "block";
+      aiFixResult.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch {
+      aiFixError.textContent = "Network error — is the server running?";
+      aiFixError.style.display = "block";
+      aiFixResult.style.display = "block";
+    } finally {
+      btnText.style.display = ""; btnLoader.style.display = "none"; aiFixBtn.disabled = false;
+    }
+  });
+
+  copyCvBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(aiFixText.textContent).then(() => {
+      copyCvBtn.classList.add("copied");
+      copyCvBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 7.5l3 3 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> Copied!';
+      setTimeout(() => {
+        copyCvBtn.classList.remove("copied");
+        copyCvBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="4" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg> Copy';
+      }, 2000);
+    });
   });
 
   /* ── Single Results Renderer ── */
@@ -270,6 +324,9 @@
     bulkErrorMsg.style.display = "none"; updateBulkBtn();
   }
 
+  // Pre-populate with 1 job on load
+  addJobItem();
+
   // Add / remove jobs
   addJobBtn.addEventListener("click", () => addJobItem());
 
@@ -354,6 +411,7 @@
     jobItems = []; jobIdSeq = 0;
     jobsEmpty.style.display = "flex";
     jobCountBadge.textContent = "0 added";
+    addJobItem();
     updateBulkBtn();
     switchMode("bulk");
     window.scrollTo({ top: 0, behavior: "smooth" });

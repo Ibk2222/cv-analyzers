@@ -217,6 +217,42 @@
           <div class="missing-tags-wrap"><div class="tags" id="missingTags"></div></div>
         </div>
       </div>
+
+      <!-- AI FIX BANNER -->
+      <div class="ai-fix-banner" id="aiFixBanner">
+        <div class="ai-fix-left">
+          <div class="ai-fix-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2l2.09 6.26L19 11l-5.91 2.74L11 20l-2.09-6.26L3 11l5.91-2.74L11 2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <h3 class="ai-fix-title">Let AI Fix Your CV</h3>
+            <p class="ai-fix-sub">Rewrite your CV into a professional, ATS-ready version in seconds</p>
+          </div>
+        </div>
+        <button class="btn-ai-fix" id="aiFixBtn">
+          <span class="btn-text">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1l1.57 4.7L13.5 7.5l-4.43 1.8L7.5 14l-1.57-4.7L1.5 7.5l4.43-1.8L7.5 1z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            Fix My CV with AI
+          </span>
+          <span class="btn-loader" style="display:none">
+            <svg class="spinner" width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="30" stroke-dashoffset="22"/></svg>
+            Rewriting...
+          </span>
+        </button>
+      </div>
+
+      <!-- AI FIX RESULT -->
+      <div class="r-card ai-fix-result" id="aiFixResult" style="display:none">
+        <div class="ai-fix-result-hdr">
+          <h3 class="r-title">Your Improved CV</h3>
+          <button class="btn-copy-cv" id="copyCvBtn">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="4" y="1" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="4" width="9" height="11" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
+            Copy
+          </button>
+        </div>
+        <pre class="ai-fix-text" id="aiFixText"></pre>
+        <div class="error-msg" id="aiFixError" style="display:none"></div>
+      </div>
     </div>
   </div>
 

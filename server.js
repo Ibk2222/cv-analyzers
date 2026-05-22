@@ -1,13 +1,16 @@
+require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
 const mammoth = require("mammoth");
+const Anthropic = require("@anthropic-ai/sdk");
 const _pdfParse = require("pdf-parse");
 const pdfParse = typeof _pdfParse === "function" ? _pdfParse : _pdfParse.default;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 app.use(cors());
 app.use(express.json());
@@ -292,6 +295,55 @@ app.post("/api/bulk-analyze", upload.single("cv"), async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message || "Failed to analyze" });
+  }
+});
+
+app.post("/api/fix-cv", upload.single("cv"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+    if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === "your_api_key_here") {
+      return res.status(503).json({ error: "AI fix is not configured. Add your ANTHROPIC_API_KEY to the .env file." });
+    }
+
+    const cvText = await extractText(req.file);
+    if (!cvText || cvText.trim().length < 20) {
+      return res.status(400).json({ error: "Could not extract readable text from the file." });
+    }
+
+    const jobTitle = (req.body.jobTitle || "").trim();
+    const jobDescription = (req.body.jobDescription || "").trim();
+
+    const jobContext = jobTitle || jobDescription
+      ? `\n\nThis CV is being tailored for the following role:\nJob Title: ${jobTitle || "Not specified"}\n${jobDescription ? `Job Description:\n${jobDescription}` : ""}`
+      : "";
+
+    const prompt = `You are an expert CV/resume writer. Rewrite the CV below to make it professional, ATS-friendly, and compelling to recruiters.
+
+Rules:
+- Keep ONLY the person's real experience, education, skills, and contact info — do not invent anything
+- Add a strong Professional Summary at the top if one is missing
+- Rewrite bullet points with strong action verbs (Led, Built, Delivered, Increased, etc.)
+- Add quantified achievements where the original gives enough context (e.g. "managed projects" → "Managed 4 concurrent projects")
+- Organise clearly into: Contact | Summary | Experience | Education | Skills
+- Remove filler phrases like "responsible for" or "duties included"
+- Keep it concise — aim for 400–700 words of content${jobContext}
+
+Original CV:
+${cvText}
+
+Return ONLY the rewritten CV text with clear section headers. Do not include any explanation or commentary.`;
+
+    const message = await anthropic.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2048,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const fixedCV = message.content[0].text;
+    res.json({ success: true, fixedCV });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message || "Failed to fix CV" });
   }
 });
 
