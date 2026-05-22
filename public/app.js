@@ -207,20 +207,43 @@
 
     // Keywords
     const kwCard = document.getElementById("keywordsCard");
-    if ((data.matchedKeywords && data.matchedKeywords.length > 0) || (data.missingKeywords && data.missingKeywords.length > 0)) {
+    const hasMatched = data.matchedKeywords && data.matchedKeywords.length > 0;
+    const hasMissing = data.missingKeywords && data.missingKeywords.length > 0;
+
+    if (hasMatched || hasMissing) {
+      const matched = data.matchedKeywords || [];
+      const missing = data.missingKeywords || [];
+      const total = matched.length + missing.length;
+      const pct = total > 0 ? Math.round((matched.length / total) * 100) : 0;
+
+      // Summary bar
+      document.getElementById("kwMatchCount").textContent = matched.length;
+      document.getElementById("kwTotalCount").textContent = total;
+      document.getElementById("kwPctBadge").textContent = pct + "%";
+      document.getElementById("kwPctBadge").style.background =
+        pct >= 70 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
+      setTimeout(() => {
+        document.getElementById("kwRateFill").style.width = pct + "%";
+        document.getElementById("kwRateFill").style.background =
+          pct >= 70 ? "linear-gradient(90deg,#10b981,#34d399)"
+          : pct >= 40 ? "linear-gradient(90deg,#f59e0b,#fbbf24)"
+          : "linear-gradient(90deg,#ef4444,#f87171)";
+      }, 150);
+
+      // Matched tags
       const matchedTags = document.getElementById("matchedTags");
+      matchedTags.innerHTML = matched.length > 0
+        ? matched.map((k) => `<span class="tag tag-matched">${k}</span>`).join("")
+        : `<span class="no-keywords">None matched</span>`;
+
+      // Missing panel
+      const missingPanel = document.getElementById("missingPanel");
       const missingTags = document.getElementById("missingTags");
-
-      if (data.matchedKeywords.length > 0) {
-        matchedTags.innerHTML = data.matchedKeywords.map((k) => `<span class="tag tag-matched">${k}</span>`).join("");
+      if (missing.length > 0) {
+        missingTags.innerHTML = missing.map((k) => `<span class="tag tag-missing">${k}</span>`).join("");
+        missingPanel.style.display = "block";
       } else {
-        matchedTags.innerHTML = `<span class="no-keywords">None matched</span>`;
-      }
-
-      if (data.missingKeywords.length > 0) {
-        missingTags.innerHTML = data.missingKeywords.map((k) => `<span class="tag tag-missing">${k}</span>`).join("");
-      } else {
-        missingTags.innerHTML = `<span class="no-keywords">None — great match!</span>`;
+        missingPanel.style.display = "none";
       }
 
       kwCard.style.display = "block";

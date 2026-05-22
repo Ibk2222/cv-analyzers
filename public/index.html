@@ -284,16 +284,43 @@
       <!-- Keywords -->
       <div class="r-card" id="keywordsCard" style="display:none">
         <h3 class="r-title">Keyword Matching</h3>
-        <div class="keyword-groups">
-          <div class="keyword-group">
-            <h4><span class="dot green"></span> Matched</h4>
-            <div class="tags" id="matchedTags"></div>
+
+        <!-- Match rate summary -->
+        <div class="kw-summary">
+          <div class="kw-summary-text">
+            <span><strong id="kwMatchCount">0</strong> of <strong id="kwTotalCount">0</strong> keywords found in your CV</span>
+            <span class="kw-pct-badge" id="kwPctBadge">0%</span>
           </div>
-          <div class="keyword-group">
-            <h4><span class="dot red"></span> Missing</h4>
+          <div class="kw-rate-bar">
+            <div class="kw-rate-fill" id="kwRateFill" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Matched keywords -->
+        <div class="keyword-group matched-group" id="matchedGroup">
+          <h4><span class="dot green"></span> Found in your CV</h4>
+          <div class="tags" id="matchedTags"></div>
+        </div>
+
+        <!-- Missing keywords — prominent warning panel -->
+        <div class="missing-kw-panel" id="missingPanel" style="display:none">
+          <div class="missing-kw-header">
+            <div class="missing-kw-icon">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 3v5M8 10.5v1" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+                <path d="M6.8 1.6L1.2 11a1.4 1.4 0 001.2 2.1h11.2a1.4 1.4 0 001.2-2.1L9.2 1.6a1.4 1.4 0 00-2.4 0z" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <h4>Missing from your CV</h4>
+              <p>Add these keywords to boost your ATS score and match this role</p>
+            </div>
+          </div>
+          <div class="missing-tags-wrap">
             <div class="tags" id="missingTags"></div>
           </div>
         </div>
+
       </div>
 
     </div>
