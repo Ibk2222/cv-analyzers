@@ -7,8 +7,7 @@ const mammoth = require("mammoth");
 const Anthropic = require("@anthropic-ai/sdk");
 const { Document, Paragraph, TextRun, Packer, HeadingLevel, AlignmentType } = require("docx");
 const PDFDocument = require("pdfkit");
-const _pdfParse = require("pdf-parse");
-const pdfParse = typeof _pdfParse === "function" ? _pdfParse : _pdfParse.default;
+const pdfParse = require("pdf-parse");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
