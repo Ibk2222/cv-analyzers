@@ -16,21 +16,35 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+const ALLOWED_MIME = new Set([
+  "application/pdf",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/msword",
+  "application/zip",          // some browsers send this for .docx
+  "application/octet-stream", // generic binary fallback
+]);
+const ALLOWED_EXT = new Set([".pdf", ".docx", ".doc"]);
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = [
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "application/msword",
-    ];
-    allowed.includes(file.mimetype) ? cb(null, true) : cb(new Error("Only PDF and DOCX files are allowed"));
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (ALLOWED_MIME.has(file.mimetype) || ALLOWED_EXT.has(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF and DOCX files are allowed"));
+    }
   },
 });
 
+function isPdf(file) {
+  const ext = path.extname(file.originalname).toLowerCase();
+  return ext === ".pdf" || file.mimetype === "application/pdf";
+}
+
 async function extractText(file) {
-  if (file.mimetype === "application/pdf") {
+  if (isPdf(file)) {
     const data = await pdfParse(file.buffer);
     return data.text;
   } else {
